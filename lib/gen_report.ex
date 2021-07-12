@@ -4,7 +4,11 @@ defmodule GenReport do
   def build(file_name) do
     file_name
     |> Parser.parse_file()
-    |> Enum.reduce(create_map(%{}, %{}, %{}), fn line, report -> sum_values(line, report) end)
+    |> Enum.reduce(build_map(%{}, %{}, %{}), fn line, report -> sum_values(line, report) end)
+  end
+
+  def build() do
+    {:error, "Insira o nome de um arquivo"}
   end
 
   defp sum_values(
@@ -19,7 +23,7 @@ defmodule GenReport do
     hours_per_month = merge_multi_maps(hours_per_month, %{name => %{month => hours}})
     hours_per_year = merge_multi_maps(hours_per_year, %{name => %{year => hours}})
 
-    create_map(all_hours, hours_per_month, hours_per_year)
+    build_map(all_hours, hours_per_month, hours_per_year)
   end
 
   defp merge_maps(map1, map2) do
@@ -32,7 +36,7 @@ defmodule GenReport do
     end)
   end
 
-  def create_map(all_hours, hours_per_month, hours_per_year) do
+  defp build_map(all_hours, hours_per_month, hours_per_year) do
     %{
       "all_hours" => all_hours,
       "hours_per_month" => hours_per_month,
